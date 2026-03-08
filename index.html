@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    
     <title>Mart8 Letter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,181 +11,356 @@
       rel="stylesheet"
     />
     <style>
-body{
-  margin:0;
-}
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
 
-#main-container{
-  background-image: url("https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/heart-bg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-}
-#envelope-container{
-  text-align: center;
-  cursor:pointer;
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+      }
 
-}
-@keyframes pulse {
-    0% {
-        transform:scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
+      body {
+        font-family: 'Pixelify Sans', sans-serif;
+      }
+
+      #main-container {
+        background-image: url("https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/heart-bg.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        min-height: 100dvh;
+        width: 100%;
+      }
+
+      /* ── Envelope Screen ── */
+      #envelope-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        min-height: 100dvh;
+        text-align: center;
+        cursor: pointer;
+        padding: 20px;
+      }
+
+      @keyframes pulse {
+        0%   { transform: scale(1); }
+        50%  { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      #envelope {
+        width: clamp(120px, 30vw, 200px);
+        animation: pulse 1.5s infinite;
+        cursor: pointer;
+      }
+
+      #envelope-container p {
+        font-size: clamp(16px, 4vw, 28px);
+        margin-top: 16px;
+        color: #fff;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+      }
+
+      /* ── Letter Overlay ── */
+      #letter-container {
+        background: transparent;
+        display: none;
+        position: fixed;
+        inset: 0;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+        overflow-y: auto;
+      }
+
+      /* ── Letter Window ── */
+      .letter-window {
+        position: relative;
+        width: min(90vw, 800px);
+        /* Keep 3:2 only on desktop; on small screens let height grow naturally */
+        padding: clamp(60px, 18vw, 180px) clamp(16px, 5vw, 40px) clamp(20px, 4vw, 40px);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        text-align: center;
+        background-image: url("https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/window.png");
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 12px;
+        gap: clamp(4px, 1.5vw, 12px);
+        transform: scale(1.2);
+        opacity: 0;
+        transition: transform 0.6s ease, opacity 0.6s ease;
+      }
+
+      /* Fixed aspect ratio only when screen is wide enough */
+      @media (min-width: 500px) {
+        .letter-window {
+          aspect-ratio: 3 / 2;
+          justify-content: center;
+        }
+      }
+
+      .letter-window.open {
         transform: scale(1);
-    }
-}
+        opacity: 1;
+      }
 
-#envelope{
-    width: 200px;
-    animation: pulse 1.5s infinite;
-    cursor: pointer;
-}
+      /* ── Typography ── */
+      h1 {
+        font-family: 'Pixelify Sans', sans-serif;
+        font-size: clamp(11px, 2.4vw, 22px);
+        margin: clamp(4px, 1vw, 14px) clamp(8px, 3vw, 24px);
+        line-height: 1.4;
+        color: #5a1a1a;
+      }
 
-#letter-container{
-  background:transparent;
-    display: none;
-    position:fixed;
-    inset: 0;
-    justify-content: center;
-    align-items: center;
-}
+      p {
+        font-family: 'Pixelify Sans', sans-serif;
+        font-size: clamp(20px, 5vw, 40px);
+        margin: 0;
+           color:purple;
+      }
 
-.letter-window{
-    width: 90vw;
-    max-width: 800px;
-    aspect-ratio: 3/2;
-    padding: 20px 20px 0 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    background-image: url("https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/window.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    border-radius: 12px;
-    gap: 1px;
-    padding-top: 180px;
+      /* ── Cat ── */
+      .cat {
+        width: clamp(80px, 22vw, 200px);
+        transition: width 0.4s ease;
+      }
 
-    transform: scale(1.2);
-    opacity: 0;
-    transition: transform 0.6s ease, opacity 0.6s ease;
-}
+      .letter-window.final .cat {
+        width: clamp(60px, 16vw, 150px);
+      }
 
-.letter-window.open {
-    transform: scale(1);
-    opacity: 1;
-}
+      /* ── Buttons ── */
+      .buttons {
+        display: flex;
+        justify-content: center;
+        gap: clamp(12px, 4vw, 30px);
+        position: relative;
+        flex-wrap: nowrap;
+      }
 
-h1 {
-    font-size: 30px;
-    margin:30px;
-    padding-top:20px;
-}
+      .no-wrapper {
+        position: relative;
+      }
 
-p {
-    font-size: 40px;
-}
+      .btn {
+        width: clamp(70px, 18vw, 120px);
+        cursor: pointer;
+        user-select: none;
+        display: block;
+      }
 
-/* Cat */
+      .yes-btn {
+        position: relative;
+        z-index: 2;
+        transform-origin: center center;
+        transition: transform 0.3s ease;
+      }
 
-.cat {
-    width: 250px;
-    margin: 10px 0;
-    transition: width 0.4s ease;
-}
+      .no-btn {
+        z-index: 1;
+        position: relative;
+        cursor: default;
+      }
 
-.letter-window.final .cat {
-    width: 180px;
-}
+      .no-wrapper {
+        transition: left 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+                    top  0.18s cubic-bezier(0.22, 1, 0.36, 1);
+      }
 
-/* buttons */
-.buttons {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    position: relative;
-}
+      @keyframes wiggle {
+        0%   { transform: rotate(0deg) scale(1); }
+        20%  { transform: rotate(-14deg) scale(1.12); }
+        40%  { transform: rotate(11deg) scale(1.06); }
+        60%  { transform: rotate(-9deg) scale(1.09); }
+        80%  { transform: rotate(7deg) scale(1.03); }
+        100% { transform: rotate(0deg) scale(1); }
+      }
 
-.no-wrapper{
-    position:relative;
-}
+      .no-btn.wiggling {
+        animation: wiggle 0.38s ease forwards;
+      }
 
-.btn {
-    width: 120px;
-    cursor: pointer;
-    user-select: none;
-}
+      /* ── Final Text ── */
+      .final-text {
+        font-size: clamp(11px, 2.2vw, 20px);
+        line-height: 1.5;
+        text-align: center;
+        display: inline-block;
+        padding: clamp(6px, 1.5vw, 12px) clamp(10px, 2.5vw, 20px);
+        background-color: rgba(255, 240, 240, 0.6);
+        border-radius: 12px;
+        color: #5a1a1a;
+        max-width: 90%;
+      }
 
-.yes-btn,
-.no-btn {
-width: 120px;
-height: auto;
-display: inline-block;
-}
-
-.yes-btn {
-    position: relative;
-    z-index: 2;
-    transform-origin: center center;
-    transition: transform 0.3s ease;
-}
-
-.no-btn {
-    z-index: 1;
-    position: relative;
-    transition: transform 0.15s ease;
-    cursor: default;
-}
-
-.final-text{
-    font-size: 22px;
-    line-height: 1.4;
-    text-align: center;
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: rgba(255,240,240,0.5);
-    border-radius: 12px;
-}
-</style>
-
-   
+      /* ── Scrollbar hide on mobile overlay ── */
+      #letter-container::-webkit-scrollbar { display: none; }
+      #letter-container { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
   </head>
-  
+
   <body>
-    <div id="main-container"> 
-    <!-- Envelope Screen -->
-    <div id="envelope-container">
-      <img src="https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/envelope.png" alt="Envelope" id="envelope" />
-      <p>♡ Letter for You ♡</p>
-    </div>
+    <div id="main-container">
 
-    <!-- Letter Screen -->
-    <div id="letter-container">
-      <div class="letter-window">
-        <h1 id="letter-title">Эмэгтэйчүүдийн эрхийг хамгаалах өдрийн мэнд хайраа<3 Чи надтай өнөөдөр кино болзоо хийх үү?</h1>
-
-        <img src="https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/cat_heart.gif" class="cat" id="letter-cat" />
-
-        <div class="buttons" id="letter-buttons">
-          <img src="https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/yes.png" class="btn yes-btn" alt="Yes" />
-
-          <div class="no-wrapper">
-            <img src="https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/no.png" class="btn no-btn" alt="No" />
-          </div>
-        </div>
-
-        <p id="final-text" class="final-text" style="display: none">
-          <strong>Mart8 Date:</strong> Meow Discord at 9pm. Dress fancy! and prepare yummy food
-        </p>
+      <!-- Envelope Screen -->
+      <div id="envelope-container">
+        <img
+          src="https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/envelope.png"
+          alt="Envelope"
+          id="envelope"
+        />
+        <p>♡ Letter for You ♡</p>
       </div>
+
+      <!-- Letter Screen -->
+      <div id="letter-container">
+        <div class="letter-window">
+          <h1 id="letter-title">
+            Эмэгтэйчүүдийн эрхийг хамгаалах өдрийн мэнд хайраа&lt;3
+            Чи надтай өнөөдөр кино болзоо хийх үү?
+          </h1>
+
+          <img
+            src="https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/cat_heart.gif"
+            class="cat"
+            id="letter-cat"
+          />
+
+          <div class="buttons" id="letter-buttons">
+            <img
+              src="https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/yes.png"
+              class="btn yes-btn"
+              alt="Yes"
+            />
+            <div class="no-wrapper">
+              <img
+                src="https://uploads.onecompiler.io/44fq4sbyk/44fq48u6e/no.png"
+                class="btn no-btn"
+                alt="No"
+              />
+            </div>
+          </div>
+
+          <p id="final-text" class="final-text" style="display: none">
+            <strong>Mart8 Date:</strong> Meow Discord at 9pm. Dress fancy! and prepare yummy food
+          </p>
+        </div>
+      </div>
+
     </div>
-    <script src="script.js"></script>
-    </div>
+
+    <script>
+      const envelopeContainer = document.getElementById('envelope-container');
+      const letterContainer   = document.getElementById('letter-container');
+      const letterWindow      = document.querySelector('.letter-window');
+      const yesBtn            = document.querySelector('.yes-btn');
+      const noBtn             = document.querySelector('.no-btn');
+      const finalText         = document.getElementById('final-text');
+      const letterButtons     = document.getElementById('letter-buttons');
+      const letterTitle       = document.getElementById('letter-title');
+      const letterCat         = document.getElementById('letter-cat');
+
+      let noClickCount = 0;
+
+      // Open letter
+      envelopeContainer.addEventListener('click', () => {
+        envelopeContainer.style.display = 'none';
+        letterContainer.style.display   = 'flex';
+        // Trigger transition on next frame
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            letterWindow.classList.add('open');
+          });
+        });
+      });
+
+      // Yes button
+      yesBtn.addEventListener('click', () => {
+        letterTitle.textContent = 'Yay! 🎉';
+        letterButtons.style.display = 'none';
+        finalText.style.display     = 'inline-block';
+        letterWindow.classList.add('final');
+      });
+
+      // No button – short flee on mouseenter + wiggle animation
+      const noWrapper = noBtn.closest('.no-wrapper');
+
+      // Track current position
+      let noX = null;
+      let noY = null;
+      const FLEE_DIST = 120; // px — short hop distance
+
+      function wiggleAndFlee() {
+        // Wiggle animation
+        noBtn.classList.remove('wiggling');
+        void noBtn.offsetWidth; // reflow to restart animation
+        noBtn.classList.add('wiggling');
+        noBtn.addEventListener('animationend', () => noBtn.classList.remove('wiggling'), { once: true });
+
+        noClickCount++;
+        // Grow Yes button each time
+        const scale = 1 + noClickCount * 0.12;
+        yesBtn.style.transform = `scale(${scale})`;
+
+        const btnW = noWrapper.offsetWidth;
+        const btnH = noWrapper.offsetHeight;
+
+        // First time: make it fixed at its current position
+        if (noX === null) {
+          const rect = noWrapper.getBoundingClientRect();
+          noX = rect.left;
+          noY = rect.top;
+          noWrapper.style.position = 'fixed';
+          noWrapper.style.zIndex   = '9999';
+        }
+
+        // Pick a random direction to hop a short distance
+        const angle   = Math.random() * 2 * Math.PI;
+        let newX = noX + Math.cos(angle) * FLEE_DIST;
+        let newY = noY + Math.sin(angle) * FLEE_DIST;
+
+        // Clamp within viewport
+        newX = Math.max(10, Math.min(window.innerWidth  - btnW  - 10, newX));
+        newY = Math.max(10, Math.min(window.innerHeight - btnH - 10, newY));
+
+        noX = newX;
+        noY = newY;
+
+        noWrapper.style.left = noX + 'px';
+        noWrapper.style.top  = noY + 'px';
+      }
+
+      // Desktop: flee on mouseenter
+      noBtn.addEventListener('mouseenter', wiggleAndFlee);
+
+      // Mobile: wiggle + shrink on touch
+      noBtn.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+        noBtn.classList.remove('wiggling');
+        void noBtn.offsetWidth;
+        noBtn.classList.add('wiggling');
+        noBtn.addEventListener('animationend', () => noBtn.classList.remove('wiggling'), { once: true });
+
+        noClickCount++;
+        const scale = 1 + noClickCount * 0.12;
+        yesBtn.style.transform = `scale(${scale})`;
+        const newSize = Math.max(0, 1 - noClickCount * 0.22);
+        noBtn.style.transform = `scale(${newSize})`;
+        if (noClickCount >= 5) noBtn.style.display = 'none';
+      }, { passive: true });
+    </script>
   </body>
 </html>
